@@ -79,6 +79,8 @@
         );
         xhr.send(`file-name=${file.name}&file-type=${file.type}`);
         xhr.onreadystatechange = () => {
+          console.log("In the stage change baby");
+          console.log(xhr);
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
               const response = JSON.parse(xhr.responseText);
