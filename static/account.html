@@ -69,7 +69,7 @@
 
       function uploadFile(file, signedRequest, url) {
         const xhr = new XMLHttpRequest();
-        xhr.open("PUT", signedRequest);
+        xhr.open("POST", signedRequest);
         xhr.onreadystatechange = () => {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
