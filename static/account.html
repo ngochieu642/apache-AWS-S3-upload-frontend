@@ -36,43 +36,20 @@
       /*
       Function to carry out the actual POST request to S3 using the signed request from the Python app.
     */
-      // function uploadFile(file, s3Data, url) {
-      //   console.log("UPLOAD FILE INPUT");
-      //   console.log("file", file);
-      //   console.log("s3Data", s3Data);
-      //   console.log("url", url);
-
-      //   const xhr = new XMLHttpRequest();
-      //   xhr.open("POST", url);
-      //   xhr.setRequestHeader("x-amz-acl", "public-read");
-
-      //   const postData = new FormData();
-      //   for (key in s3Data.fields) {
-      //     postData.append(key, s3Data.fields[key]);
-      //   }
-      //   postData.append("file", file);
-
-      //   console.log("POST data: ", postData);
-
-      //   xhr.onreadystatechange = () => {
-      //     if (xhr.readyState === 4) {
-      //       if (xhr.status === 200 || xhr.status === 204) {
-      //         document.getElementById("preview").src = url;
-      //         document.getElementById("avatar-url").value = url;
-      //       } else {
-      //         alert("Could not upload file.");
-      //       }
-      //     }
-      //   };
-      //   xhr.send(postData);
-      // }
-
-      function uploadFile(file, signedRequest, url) {
+      function uploadFile(file, s3Data, url) {
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", signedRequest);
+        xhr.open("POST", s3Data.url);
+        xhr.setRequestHeader("x-amz-acl", "public-read");
+
+        const postData = new FormData();
+        for (key in s3Data.fields) {
+          postData.append(key, s3Data.fields[key]);
+        }
+        postData.append("file", file);
+
         xhr.onreadystatechange = () => {
           if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
+            if (xhr.status === 200 || xhr.status === 204) {
               document.getElementById("preview").src = url;
               document.getElementById("avatar-url").value = url;
             } else {
@@ -80,7 +57,7 @@
             }
           }
         };
-        xhr.send(file);
+        xhr.send(postData);
       }
 
       /*
@@ -90,28 +67,23 @@
     */
       function getSignedRequest(file) {
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", `http://13.251.35.187:8000/api/promotion/signs3`);
-        xhr.setRequestHeader(
-          "Content-Type",
-          "application/x-www-form-urlencoded"
-          // "application/json"
+        xhr.open(
+          "GET",
+          `http://13.251.35.187:8000/api/promotion/signs3?file_name=${file.name}&file_type=${file.type}`
         );
-        xhr.send(`file-name=${file.name}&file-type=${file.type}`);
-        xhr.onreadystatechange = data => {
-          console.log("data: ", data);
-          console.log("In the stage change baby");
-          console.log(xhr);
+        xhr.onreadystatechange = () => {
+          console.log("xhr: ", xhr);
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
+              console.log("Load success");
               const response = JSON.parse(xhr.responseText);
-              console.log(response);
-              uploadFile(file, response.signed_request, response.url);
+              uploadFile(file, response.data, response.url);
             } else {
               alert("Could not get signed URL.");
             }
           }
         };
-        //   xhr.send();
+        xhr.send();
       }
 
       /*
