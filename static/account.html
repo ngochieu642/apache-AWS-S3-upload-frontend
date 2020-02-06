@@ -36,27 +36,43 @@
       /*
       Function to carry out the actual POST request to S3 using the signed request from the Python app.
     */
-      function uploadFile(file, s3Data, url) {
-        console.log("UPLOAD FILE INPUT");
-        console.log("file", file);
-        console.log("s3Data", s3Data);
-        console.log("url", url);
+      // function uploadFile(file, s3Data, url) {
+      //   console.log("UPLOAD FILE INPUT");
+      //   console.log("file", file);
+      //   console.log("s3Data", s3Data);
+      //   console.log("url", url);
 
+      //   const xhr = new XMLHttpRequest();
+      //   xhr.open("POST", url);
+      //   xhr.setRequestHeader("x-amz-acl", "public-read");
+
+      //   const postData = new FormData();
+      //   for (key in s3Data.fields) {
+      //     postData.append(key, s3Data.fields[key]);
+      //   }
+      //   postData.append("file", file);
+
+      //   console.log("POST data: ", postData);
+
+      //   xhr.onreadystatechange = () => {
+      //     if (xhr.readyState === 4) {
+      //       if (xhr.status === 200 || xhr.status === 204) {
+      //         document.getElementById("preview").src = url;
+      //         document.getElementById("avatar-url").value = url;
+      //       } else {
+      //         alert("Could not upload file.");
+      //       }
+      //     }
+      //   };
+      //   xhr.send(postData);
+      // }
+
+      function uploadFile(file, signedRequest, url) {
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", url);
-        xhr.setRequestHeader("x-amz-acl", "public-read");
-
-        const postData = new FormData();
-        for (key in s3Data.fields) {
-          postData.append(key, s3Data.fields[key]);
-        }
-        postData.append("file", file);
-
-        console.log("POST data: ", postData);
-        
+        xhr.open("PUT", signedRequest);
         xhr.onreadystatechange = () => {
           if (xhr.readyState === 4) {
-            if (xhr.status === 200 || xhr.status === 204) {
+            if (xhr.status === 200) {
               document.getElementById("preview").src = url;
               document.getElementById("avatar-url").value = url;
             } else {
@@ -64,7 +80,7 @@
             }
           }
         };
-        xhr.send(postData);
+        xhr.send(file);
       }
 
       /*
