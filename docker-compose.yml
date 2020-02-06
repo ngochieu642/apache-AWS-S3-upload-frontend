@@ -1,0 +1,10 @@
+version: "3.3"
+
+services:
+  db:
+    image: httpd:2.4
+    container_name: aws_upload_test
+    volumes:
+      - ./static:/usr/local/apache2/htdocs/
+    ports:
+      - 8080:80
