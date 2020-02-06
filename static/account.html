@@ -75,11 +75,12 @@
         xhr.open("POST", `http://13.251.35.187:8000/api/promotion/signs3`);
         xhr.setRequestHeader(
           "Content-Type",
-          // "application/x-www-form-urlencoded",
-          "application/json"
+          "application/x-www-form-urlencoded"
+          // "application/json"
         );
         xhr.send(`file-name=${file.name}&file-type=${file.type}`);
-        xhr.onreadystatechange = () => {
+        xhr.onreadystatechange = data => {
+          console.log("data: ", data);
           console.log("In the stage change baby");
           console.log(xhr);
           if (xhr.readyState === 4) {
