@@ -52,6 +52,8 @@
         }
         postData.append("file", file);
 
+        console.log("POST data: ", postData);
+        
         xhr.onreadystatechange = () => {
           if (xhr.readyState === 4) {
             if (xhr.status === 200 || xhr.status === 204) {
